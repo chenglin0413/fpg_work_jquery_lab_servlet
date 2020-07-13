@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+
+    <style type="text/css">
+        body{
+            margin-left: 10px;
+            position:absolute;
+            height:100%;
+            width:100%;
+        }
+        .addressbook-table-btn {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border-radius:20%;
+            margin-bottom: 4px;
+        }
+        .addressbook-table {
+            display: table;
+
+        }
+
+        .addressbook-table .thead {
+            display: table-header-group;
+            font-family:monospace;
+
+        }
+
+        .addressbook-table .tbody {
+            display: table-row-group;
+            font-family:monospace;
+
+        }
+
+        .addressbook-table .tr {
+            display: table-row-group;
+            width: 165px;
+        }
+
+        .addressbook-table .th,
+        .addressbook-table .td {
+            text-align:center;
+            width: 153px;
+            border: 0.1px solid navy;
+            /*padding: 0.1px;*/
+            display: table-cell;
+
+        }
+        .addressbook-table .tbody button{
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border-radius:20%;
+            margin-bottom: 4px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- 選擇所需圖示類型的載入 -->
+    <!-- 這裡會載入 solid 和 regular 這兩類的圖示，最後要記得載入 fontawesome.js -->
+    <script src="https://use.fontawesome.com/releases/v5.0.0/js/solid.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.0/js/regular.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.0/js/fontawesome.js"></script>
+</head>
+
+<body>
+    <div>
+        <h2 style="text-align:center"> AddressBook_lab</h2>
+    </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"></script>
+        <button id="add-btn" class="addressbook-table-btn"><i class="fas fa-plus-square"></i></button>
+        <button id="del-check-btn" class="addressbook-table-btn"><i class="fas fa-user-times"></i></button>
+        <BR>
+        <div class="addressbook-table">
+            <div class="thead">
+                <div class="tr">
+                    <div  class="th"><input type="checkbox" class="checkbox_all" /><br><span>select all</span></div>
+                    <div  class="th">No(編號)</div>
+                    <div  class="th">Name(姓名)</div>
+                    <div  class="th">tel(電話)</div>
+                    <div  class="th">gender(性別)</div>
+                    <div  class="th">type(類型)</div>
+                    <div  class="th">notes(備註)</div>
+                    <div  class="th">function(功能)</div>
+                    <div  class="th">Update Date(更新時間)</div>
+                </div>
+            </div>
+            <div class="tbody">
+            </div>
+        </div>
+<!--樣板-->
+<span id="temp" style="display: none">
+<div id="div-tr-temp" class="tr"  >
+
+        <div id="checkbox" class="td">
+            <div class="checkbox">
+                <div id="_id" ><div class="text"></div></div>
+                <input type="checkbox"/>
+            </div>
+        </div>
+        <div id="no" class="td"><div class="text" style="display: none;"></div><input type="text"></div>
+        <div id="name" class="td"><div class="text"></div><input type="text"></div>
+        <div id="tel" class="td"><div class="text"></div><input type="text"></div>
+        <div id="gender" class="td"><div class="text"></div>
+            <input type="radio" name="gender" value="male" checked="checked"><div class="inner_text">男性</div>
+            <input type="radio" name="gender" value="female"><div class="inner_text">女性</div>
+        </div>
+        <div id="type" class="td"><div class="text"></div>
+            <div class="selectIndex" style="display: none;"></div>
+            <select>
+                <option>同學</option>
+                <option>家庭</option>
+                <option>工作夥伴</option>
+            </select>
+        </div>
+        <div id="notes" class="td"><div class="text"></div><textarea></textarea></div>
+        <div id="function" class="td">
+            <button id="save-btn" class="save-btn"><i class="fas fa-save"></i></button>
+            <button id="cancel-btn" class="cancel-btn"><i class="fas fa-window-close"></i></button>
+            <button id="edit-btn" class="edit-btn" style="display: none;"><i class="fas fa-pen-square"></i></button>
+            <button id="del-btn" class="del-btn" style="display: none;"><i class="far fa-trash-alt"></i></button>
+        </div>
+        <div id="timestamp" class="td"><div class="text" style="display: none;"></div></div>
+</div>
+</span>
+<!--  <button id="test" class="test"><i class="far fa-trash-alt"></i></button> -->
+</body>
+<script>
+//String.prototype.replaceAll = function(s1,s2){
+//    return this.replace(new RegExp(s1,"gm"), s2);
+//}
+
+    var map_multi_data={};
+    var loc_ser_number = 0;// store gender 's radio name serial_number
+    var object_show_hide_key =
+     {
+      "1":["input:not(:checkbox)",".inner_text","select","textarea",".save-btn",".cancel-btn",".checkbox > #_id"]
+     ,"2":[".edit-btn",".del-btn",".text","input[type=checkbox]"]
+     };
+
+    $(document).ready(function(){
+    	map_multi_data = ajax_test_get();
+        loc_ser_number = localStorage.getItem("loc_ser_number");
+        if(map_multi_data==null)map_multi_data={};// if loc_map is null , then give a  new {}
+        var size_map_multi_data = Object.keys(map_multi_data).length;
+        console.log("init:"+loc_ser_number);
+        console.log(map_multi_data);
+        if(!size_map_multi_data==0){
+            load_data_from_loc_storage(map_multi_data,size_map_multi_data);
+        }
+        mode_change_event($(".tbody"),"read");
+        select_all_tr_add_draggble_evnetlistener();
+    });
+   /* function check_null(obj){
+    	var
+    }*/
+    function ajax_test_post(map){//insert to restdb
+    	//console.log("name :"+map["name"]+" tel :"+map["tel"]+" type_index :"+map["type_index"]+"timestamp: "+map["timestamp"]);
+        var data = {action:"insert",
+        	        data:{name: map["name"]
+                        ,tel: map["tel"]
+                        ,notes: map["notes"]
+                        ,type: map["type"]
+                        ,type_index: map["type_index"]
+                        ,gender: map["gender"]
+                        ,timestamp: new Date(map["timestamp"]).toUTCString()
+                     }
+                    };
+        console.log(JSON.stringify(data));
+    	$.ajax({
+		    type: "POST",
+		    url: "AdrbookServlet",
+		    async: false,
+		    contentType: "application/json", // NOT dataType!
+		    data: JSON.stringify(data),
+		    success: function(response) {
+	            console.log(response);
+		    }
+		});
+    }
+    function ajax_test_get(){//query  from restdb
+    	var result = '';
+        var data = {
+    		    action: "getAll"
+    		};
+    	$.ajax({
+		    type: "POST",
+		    url: "AdrbookServlet",
+		    async: false,
+		    contentType: "application/json", // NOT dataType!
+		    data: JSON.stringify(data),
+		    success: function(response) {
+	            result = JSON.parse(response);//json自串 轉成 json物件
+	            //console.log(result);
+		    }
+		});
+        return result;
+    }
+    function ajax_test_put(map){//update to restdb
+        var data = {action:"update",
+    	        data:{xuid:map["_id"]
+    	        	,name: map["name"]
+                    ,tel:  map["tel"]
+                    ,notes:map["notes"]
+                    ,type: map["type"]
+                    ,type_index: map["type_index"]
+                    ,gender: map["gender"]
+                 }
+                };
+    console.log(data);
+		$.ajax({
+		    type: "POST",
+		    url: "AdrbookServlet",
+		    async: false,
+		    contentType: "application/json", // NOT dataType!
+		    data: JSON.stringify(data),
+		    success: function(response) {
+	            console.log(response);
+		    }
+		});
+    }
+    function ajax_test_delete(objID){//delete to restdb
+    	 var data = {
+    		         action:"delete",
+     	             data:{xuid:objID}
+                 };
+	 	$.ajax({
+			    type: "POST",
+			    url: "AdrbookServlet",
+			    async: false,
+			    contentType: "application/json", // NOT dataType!
+			    data: JSON.stringify(data),
+			    success: function(response) {
+		            console.log(response);
+			    }
+			});
+    }
+
+     //$("#test").click(function () {
+     //    alert(ajax_test_get());
+     //});
+    function load_data_from_loc_storage(map_data,map_size){
+        console.log('map_data :'+map_data);
+       for(var i=0;i<map_size;i++){
+            add_process();
+        }
+        load_data(map_data);
+        // var obj_tbody_tr_all = $(".tbody > .tr");
+        // obj_tbody_tr_all.each(function(index){
+        //     var obj_tr = $(this);
+        //     var key = parseInt(index);
+        //     console.log("key :"+key);
+        //     var map_sing_data = map_data[key];
+        //     var object_val = get_tr_property(map_sing_data,"reload");
+        //     set_map_sing_data_text(obj_tr,object_val);
+        // });
+    }
+    function load_data(map_data){
+        var obj_tbody_tr_all = $(".tbody > .tr");
+        obj_tbody_tr_all.each(function(index){
+            var obj_tr = $(this);
+            var key = parseInt(index);
+            console.log("key :"+key);
+            var map_sing_data = map_data[key];
+            var object_val = get_tr_property(map_sing_data,"reload");
+            set_map_sing_data_text(obj_tr,object_val);
+        });
+    }
+    function get_date_str(){
+        var d = new Date();// 取得現在時間
+        var date_str = d.getFullYear() + "-" +  ("0"+(d.getMonth()+1)).slice(-2) + "-" +
+        ("0" + d.getDate()).slice(-2) +  " "
+        + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2)+ ":" +
+        ("0" + d.getSeconds()).slice(-2) ;
+        return date_str;
+    }
+    function get_outer_html(obj){
+    	return obj.prop("outerHTML");
+    }
+    function set_map_sing_data_text(obj,map){
+        var object_val = map;
+        // 將資料存入並轉成顯示模式
+        $.each(object_val,function(key,value){
+            if(key.indexOf("type_index")<0){
+                console.log("key :"+key+"value :"+value);
+                setText(obj.find("#"+key+" > .text"),value);
+            }
+        });
+        setText(obj.find("#type > .selectIndex"),object_val["type_index"]);
+    }
+    function add_process(){
+        loc_ser_number++;
+        var obj_div_tr_temp =  $("#temp > #div-tr-temp");//取得dom 物件
+        var html_div_temp = get_outer_html(obj_div_tr_temp);//取得HTML
+        $(".tbody ").append(html_div_temp);//將樣板塞入
+        var tr_size = $(".tbody > .tr").length;//取得 tbody > .tr element 的數量
+        $(".tbody .tr #no input").last().attr("disabled",true).val(tr_size);//
+        $(".tbody .tr #no .text").last().text(tr_size);
+        $(".tbody .tr #gender").last().find("input").prop("name",loc_ser_number);//get new radio-btn
+        localStorage.setItem("loc_ser_number",JSON.stringify(loc_ser_number));
+        select_all_tr_add_draggble_evnetlistener();
+    }
+    function edit_process(obj){
+        var no = obj.find($("#no > .text")).text();//取得no 內的值
+        var name = obj.find($("#name > .text")).text();//取得name 內的值
+        var tel = obj.find($("#tel > .text")).text();//取得tel 內的值
+        var notes = obj.find($("#notes > .text")).text();//取得notes textarea的值
+        var gender = obj.find("#gender > .text").text();
+        obj.find("#no > input").val(no);
+	    obj.find("#name > input").val(name);
+	    obj.find("#tel > input").val(tel);
+	    obj.find("select")[0].selectedIndex=obj.find(".selectIndex").text();
+	    obj.find("#notes > textarea").val(notes);
+        obj.find("input[type=radio][value="+gender+"]").prop("checked",true);
+    }
+    function set_sing_data_to_map_from_obj(object,map){
+        $.each(object,function(key,value){
+            map[key]=value;
+            console.log("323key: "+key+"value:"+value);
+        });
+        return map;
+    }
+    function save_process(obj){
+        var map_sing_data = {};
+        var object_val = get_tr_property(obj,"save");
+        // set_map_sing_data_text(obj,object_val);
+    	return set_sing_data_to_map_from_obj(object_val,map_sing_data);
+    }
+    function del_process(obj_old){
+        var objID=$(obj_old).find("#_id").text();
+        ajax_test_delete(objID);
+        obj_old.remove();//將tr元素移除、清空
+        reload_del_process();
+    }
+    function reload_del_process(){
+        var obj_tbody_tr = $(".tbody > .tr");//重新取得現有的element_tr
+        obj_tbody_tr.each(function(index,value){//將序號逐筆更新,把資料存入map_multi_dat
+            var num = parseInt(index)+1;
+			$(this).find("#no > .text").text(num);
+			$(this).find("#no > input").val(num);
+        });
+        load_data(ajax_test_get());
+    }
+    function get_tr_property(obj,mode){
+        var object_val ={};
+        var _id,name,tel,notes,type_obj,type,type_index,gender,timestamp="";
+        if(mode==="save"){
+            _id = obj.find("#_id > .text").text();
+            name = obj.find($("#name > input")).val();//取得name 內的值
+            tel = obj.find($("#tel > input")).val();
+            notes = obj.find($("#notes > textarea")).val();//取得notes textarea的值
+            type_obj = obj.find("#type");//取得type obj
+            type =type_obj.find($("select > option:selected")).val();
+            type_index = type_obj.find($("select"))[0].selectedIndex;//取得type  option 的索引
+            gender = obj.find($("#gender > input:checked")).val();//取得option btn 的值
+            timestamp = get_date_str();
+        }else if(mode==="reload"){
+            _id = obj["xuid"]; //oracle DB
+            name = obj["name"];//取得物件內 name 內的值
+            tel = obj["tel"];
+            notes = obj["notes"];//取得物件內 notes textarea的值
+            type = obj["type"];
+            type_index = obj["type_index"];//取得物件內 type  option 的索引
+            gender = obj["gender"];//取得物件內 option btn 的值
+            timestamp = new Date(obj["timestamp"]).toLocaleString();
+        }
+        console.log("notict"+name+tel+notes+type_index+_id);
+        object_val = {"_id":_id,"name":name,"tel":tel,"notes":notes,"type":type,"type_index":type_index.toString(),"gender":gender,"timestamp":timestamp}
+        //object_val = {"_id":_id,"name":name,"tel":tel,"notes":notes,"type":type,"type_index":type_index.toString(),"gender":gender,"timestamp":timestamp}
+        return object_val;
+    }
+    function getID(str){
+    	var id = $(str).prop("id");
+    	return id;
+    }
+    function setText(obj,str){
+    	 obj.text(str);
+    }
+    function getTrObjFromBtn(obj){
+    	 return obj.parent().parent();
+    }
+    function mode_change_event(obj,mode){
+        $.each(object_show_hide_key,function(key,object){
+            $.each(object,function(index,value){
+                if((mode=="read" &&key=="1")||(mode=="edit" &&key=="2")){// "1": element like input , select, textarea, save-btn,cancel-btn
+                    console.log("key: " +key);
+                    obj.find(value).hide();
+                }else{// "2": element like .text , del-btn,edit-btn
+                    obj.find(value).show();
+                }
+            });
+        });
+    }
+    /*新增動作
+    1.新增一個樣板
+    2.將新增按鈕隱藏
+    */
+    $("#add-btn").click(function () {
+        add_process();
+    });
+    /*
+    0.儲存動作
+    1.將樣板內容input 存起來
+    2.將input的元素隱藏，將填入的值放入.text 的元素
+    3.將填入的值 經由 集合{鍵值組}儲存
+    */
+    $(".tbody").on("click",".save-btn",function () {
+        var obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
+        var add_flag = false;
+        if (obj_div_tr.find("#timestamp > .text").text().length==0)add_flag=true;
+        var map_sing_data = save_process(obj_div_tr);
+        // var no = obj_div_tr.find($("#no > input")).val();//取得no 內的值
+        // map_multi_data[no.toString()] = map_sing_data;//儲存資料
+        console.log("add_flag :"+add_flag);
+        if(add_flag){
+            ajax_test_post(map_sing_data);
+        }
+        else{
+            ajax_test_put(map_sing_data);//應該改用put
+        }
+        load_data(ajax_test_get());
+        // 將編輯格式隱藏
+        mode_change_event(obj_div_tr,"read");
+        console.log(map_sing_data);
+        console.log(map_multi_data);
+        // console.log(JSON.parse(JSON.stringify(map_multi_data)));
+    });
+
+    /*
+    0.點選pencil進入編輯模式
+    1.將樣板內容 隱藏，將input 顯示
+    */
+    $(".tbody").on("click",".edit-btn",function () {
+        var obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
+        //將.text 資料塞入 input
+        edit_process(obj_div_tr);
+        //將閱讀格式隱藏，將原text欄位隱藏
+        mode_change_event(obj_div_tr,"edit");
+    });
+    /*
+    0.點選x-btn 將編輯模式取消，回到顯示模式
+    1.將樣板內容 顯示，將input 隱藏
+    2.將.text 資料塞回 input,textarea,select
+    */
+    $(".tbody").on("click",".cancel-btn",function () {
+        var obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
+        var timestamp = obj_div_tr.find($("#timestamp > .text")).text();//取得name 內的值
+        if((timestamp!=null && timestamp!="")){//判斷已經儲存過
+	        //將閱讀格式隱藏，將原text欄位隱藏
+	        mode_change_event(obj_div_tr,"read");
+        }else{//第一次產生的DOM
+        	console.log("第一次產生被取消");
+            del_process(obj_div_tr);
+        }
+    });
+    /*
+    0.點選garbage-btn 將編輯模式取消，回到顯示模式
+    1.將tr元素移除、清空
+    */
+    $(".tbody").on("click",".del-btn",function () {
+        var obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
+        var name = obj_div_tr.find("#name .text").text();
+        var check = confirm("Are you sure you want to delete "+name+"from AddressBook?");
+        if(check){
+            map_multi_data = {};//將資料刷新重新存
+            del_process(obj_div_tr);
+            console.log(map_multi_data);
+        }
+    });
+    /*
+    0.點選check(select all) selector : checkbox
+    */
+    $(".checkbox_all").click(function(){
+        var obj_checkbox_all = $(this);
+        var check_flag = obj_checkbox_all.prop("checked");
+        var obj_input_checkbox = $(".tbody  input[type=checkbox]");
+        obj_input_checkbox.each(function(idx,val){
+            var obj = $(this);//get each item
+            if(check_flag){
+                obj.prop("checked",true);
+            }else{
+                obj.prop("checked",false);
+            }
+        });
+    });
+    /*
+    0.點選check(single checkbox) selector : checkbox
+    */
+    $("#del-check-btn").click(function(){
+        var obj_input_checkbox = $(".tbody input[type=checkbox]");
+        obj_input_checkbox.each(function(idx,val){
+            var obj = $(this);//get each item
+            var obj_div_tr = getTrObjFromBtn(obj).parent();
+            var check_flag = obj.prop("checked");
+            if(check_flag){
+                var objID=$(obj_div_tr).find("#_id").text();
+                ajax_test_delete(objID);
+                obj_div_tr.remove();
+            }
+        });
+        map_multi_data = {};//將資料刷新重新存
+        reload_del_process();
+    });
+    /*
+    0.將tbody上的tr全部加入draggble 屬性
+    1.將tr 上增加dragstart,drop,dragenter,dragend功能
+    */
+    function select_all_tr_add_draggble_evnetlistener(){
+        let items = document.querySelectorAll('.tbody > .tr');
+        items.forEach(item => {
+          add_draggble_eventlistener(item);
+        });
+    }
+    function add_draggble_eventlistener(obj){
+        $(obj).prop('draggable', true)
+        obj.addEventListener('dragstart', drag_start)
+        obj.addEventListener('drop', dropped)
+        obj.addEventListener('dragenter', cancel_default)
+        obj.addEventListener('dragover', cancel_default)
+    }
+    function drag_start (e) {
+      var index = $(e.target).index()
+      e.dataTransfer.setData('text/plain', index)
+    }
+    function dropped (e) {
+      cancel_default(e)
+
+      // get new and old index
+      let oldIndex = e.dataTransfer.getData('text/plain')
+      let target = $(e.target)
+      console.log(target);
+      let newIndex = target.index()
+
+      // remove dropped items at old place
+      let dropped = $(this).parent().children().eq(oldIndex).remove()
+
+      // insert the dropped items at new place
+      if (newIndex < oldIndex) {
+        target.parents(".tr").before(dropped)
+      } else {
+        target.parents(".tr").after(dropped)
+      }
+    }
+    function cancel_default (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      return false
+    }
+</script>
+
+</html>
