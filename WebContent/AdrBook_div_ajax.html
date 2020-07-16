@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
- 
+
 <head>
 
     <style type="text/css">
@@ -153,13 +153,13 @@
         mode_change_event($(".tbody"),"read");
         select_all_tr_add_draggble_evnetlistener();
     });
-   /* function check_null(obj){
-    	var
-    }*/
+    function isNull(str){
+        if(str !== null || str !== undefined || str !== "") return false;
+    }
     function ajax_test_post(map){//insert to restdb
     	//console.log("name :"+map["name"]+" tel :"+map["tel"]+" type_index :"+map["type_index"]+"timestamp: "+map["timestamp"]);
-        var data = {action:"insert",
-        	        data:{name: map["name"]
+    	var data = {action:"insert",
+        	        data:{name: map["name"].trim()
                         ,tel: map["tel"]
                         ,notes: map["notes"]
                         ,type: map["type"]
@@ -168,17 +168,22 @@
                         ,timestamp: new Date(map["timestamp"]).toUTCString()
                      }
                     };
-        console.log(JSON.stringify(data));
-    	$.ajax({
-		    type: "POST",
-		    url: "AdrbookServlet",
-		    async: false,
-		    contentType: "application/json", // NOT dataType!
-		    data: JSON.stringify(data),
-		    success: function(response) {
-	            console.log(response);
-		    }
-		});
+    	console.log(map["name"]);
+        if(!isNull(map["name"].trim())){
+        	$.ajax({
+    		    type: "POST",
+    		    url: "AdrbookServlet",
+    		    async: false,
+    		    contentType: "application/json", // NOT dataType!
+    		    data: JSON.stringify(data),
+    		    success: function(response) {
+    	            console.log(response);
+    		    }
+    		});
+        }else{
+        	alert("姓名欄位不得有空值")
+        }
+
     }
     function ajax_test_get(){//query  from restdb
     	var result = '';
