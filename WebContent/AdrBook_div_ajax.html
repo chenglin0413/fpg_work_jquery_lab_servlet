@@ -2,14 +2,20 @@
 <html>
 
 <head>
+	<meta charset="UTF-8">
+	<!--Import the internal css file -->
+    <link rel="stylesheet" href="css/style.css" />
 
-	<!--¤Ş¤J¥~³¡ªºjs¤å¥ó-->
+    <script src="https://use.fontawesome.com/releases/v5.0.0/js/solid.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.0/js/regular.js"></script>
+    <!-- Select the required icon type to load -->
+    <script src="https://use.fontawesome.com/releases/v5.0.0/js/fontawesome.js"></script>
+	<!--Import external js files-->
     <!-- include BlockUI -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="http://malsup.github.io/jquery.blockUI.js"></script>
-	<!--¤Ş¤J¤º³¡ªºcss¤å¥ó-->
-    <link rel="stylesheet" href="css/style.css" />
-    <!--¤Ş¤J¤º³¡ªºjs¤å¥ó-->
+
+    <!--Introduce the internal js file-->
     <script type="text/javascript" src="js/drag_drop.js" ></script>
     <script type="text/javascript" src="js/process.js" ></script>
     <script type="text/javascript" src="js/ajax_crud.js" ></script>
@@ -18,16 +24,12 @@
 
 
 
-    <!-- ¿ï¾Ü©Ò»İ¹Ï¥ÜÃş«¬ªº¸ü¤J -->
-    <!-- ³o¸Ì·|¸ü¤J solid ©M regular ³o¨âÃşªº¹Ï¥Ü¡A³Ì«á­n°O±o¸ü¤J fontawesome.js -->
-    <script src="https://use.fontawesome.com/releases/v5.0.0/js/solid.js"></script>
-    <script src="https://use.fontawesome.com/releases/v5.0.0/js/regular.js"></script>
-    <script src="https://use.fontawesome.com/releases/v5.0.0/js/fontawesome.js"></script>
+
 </head>
 
 <body>
     <div>
-        <h2 style="text-align:center"> AddressBook_lab</h2>
+        <h2 style="text-align:center"> AdrBook_div_ajax</h2>
     </div>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"></script>
         <button id="add-btn" class="addressbook-table-btn"><i class="fas fa-plus-square"></i></button>
@@ -37,20 +39,20 @@
             <div class="thead">
                 <div class="tr">
                     <div  class="th"><input type="checkbox" class="checkbox_all" /><br><span>select all</span></div>
-                    <div  class="th">No(½s¸¹)</div>
-                    <div  class="th">Name(©m¦W)</div>
-                    <div  class="th">tel(¹q¸Ü)</div>
-                    <div  class="th">gender(©Ê§O)</div>
-                    <div  class="th">type(Ãş«¬)</div>
-                    <div  class="th">notes(³Æµù)</div>
-                    <div  class="th">function(¥\¯à)</div>
-                    <div  class="th">Update Date(§ó·s®É¶¡)</div>
+                    <div  class="th">No(ç·¨è™Ÿ)</div>
+                    <div  class="th">Name(å§“å)</div>
+                    <div  class="th">tel(é›»è©±)</div>
+                    <div  class="th">gender(æ€§åˆ¥)</div>
+                    <div  class="th">type(é¡å‹)</div>
+                    <div  class="th">notes(å‚™è¨»)</div>
+                    <div  class="th">function(åŠŸèƒ½)</div>
+                    <div  class="th">Update Date(æ›´æ–°æ™‚é–“)</div>
                 </div>
             </div>
             <div class="tbody">
             </div>
         </div>
-<!--¼ËªO-->
+<!--æ¨£æ¿-->
 <span id="temp" style="display: none">
 <div id="div-tr-temp" class="tr"  >
 
@@ -64,15 +66,15 @@
         <div id="name" class="td"><div class="text"></div><input type="text"></div>
         <div id="tel" class="td"><div class="text"></div><input type="text"></div>
         <div id="gender" class="td"><div class="text"></div>
-            <input type="radio" name="gender" value="male" checked="checked"><div class="inner_text">¨k©Ê</div>
-            <input type="radio" name="gender" value="female"><div class="inner_text">¤k©Ê</div>
+            <input type="radio" name="gender" value="male" checked="checked"><div class="inner_text">ç”·æ€§</div>
+            <input type="radio" name="gender" value="female"><div class="inner_text">å¥³æ€§</div>
         </div>
         <div id="type" class="td"><div class="text"></div>
             <div class="selectIndex" style="display: none;"></div>
             <select>
-                <option>¦P¾Ç</option>
-                <option>®a®x</option>
-                <option>¤u§@¹Ù¦ñ</option>
+                <option>åŒå­¸</option>
+                <option>å®¶åº­</option>
+                <option>å·¥ä½œå¤¥ä¼´</option>
             </select>
         </div>
         <div id="notes" class="td"><div class="text"></div><textarea></textarea></div>
@@ -113,12 +115,11 @@
         mode_change_event($(".tbody"),"read");
         select_all_tr_add_draggble_evnetlistener();
     });
-    function isNull(str){
-        if(str !== null || str !== undefined || str !== "") return false;
-    }
+
      //$("#test").click(function () {
      //    alert(ajax_get());
      //});
+
     function mode_change_event(obj,mode){
         $.each(object_show_hide_key,function(key,object){
             $.each(object,function(index,value){
@@ -147,84 +148,84 @@
     	);
     	setTimeout($.unblockUI, 1000);
     }
-    /*·s¼W°Ê§@
-    1.·s¼W¤@­Ó¼ËªO
-    2.±N·s¼W«ö¶sÁôÂÃ
+    /*æ–°å¢å‹•ä½œ
+    1.æ–°å¢ä¸€å€‹æ¨£æ¿
+    2.å°‡æ–°å¢æŒ‰éˆ•éš±è—
     */
     $("#add-btn").click(function () {
         add_process();
     });
     /*
-    0.Àx¦s°Ê§@
-    1.±N¼ËªO¤º®einput ¦s°_¨Ó
-    2.±Ninputªº¤¸¯ÀÁôÂÃ¡A±N¶ñ¤Jªº­È©ñ¤J.text ªº¤¸¯À
-    3.±N¶ñ¤Jªº­È ¸g¥Ñ ¶°¦X{Áä­È²Õ}Àx¦s
+    0.å„²å­˜å‹•ä½œ
+    1.å°‡æ¨£æ¿å…§å®¹input å­˜èµ·ä¾†
+    2.å°‡inputçš„å…ƒç´ éš±è—ï¼Œå°‡å¡«å…¥çš„å€¼æ”¾å…¥.text çš„å…ƒç´ 
+    3.å°‡å¡«å…¥çš„å€¼ ç¶“ç”± é›†åˆ{éµå€¼çµ„}å„²å­˜
     */
     $(".tbody").on("click",".save-btn",function () {
-    	block_ui();
-        let obj_div_tr = getTrObjFromBtn($(this));//¨ú±o«ö¶s¤Wªºtr
+    	//block_ui();
+        let obj_div_tr = getTrObjFromBtn($(this));//å–å¾—æŒ‰éˆ•ä¸Šçš„tr
         let add_flag = false;
         if (obj_div_tr.find("#timestamp > .text").text().length==0)add_flag=true;
         let map_sing_data = save_process(obj_div_tr);
-        // var no = obj_div_tr.find($("#no > input")).val();//¨ú±ono ¤ºªº­È
-        // map_multi_data[no.toString()] = map_sing_data;//Àx¦s¸ê®Æ
+        // var no = obj_div_tr.find($("#no > input")).val();//å–å¾—no å…§çš„å€¼
+        // map_multi_data[no.toString()] = map_sing_data;//å„²å­˜è³‡æ–™
         console.log("add_flag :"+add_flag);
         if(add_flag){
-            ajax_post(map_sing_data);
+            ajax_post(data_before_transfer_by_ajax(map_sing_data,"insert"));
         }
         else{
-            ajax_put(map_sing_data);//À³¸Ó§ï¥Îput
+            ajax_put(map_sing_data);
         }
         load_data(ajax_get());
-        // ±N½s¿è®æ¦¡ÁôÂÃ
+        // å°‡ç·¨è¼¯æ ¼å¼éš±è—
         mode_change_event(obj_div_tr,"read");
     });
 
     /*
-    0.ÂI¿ïpencil¶i¤J½s¿è¼Ò¦¡
-    1.±N¼ËªO¤º®e ÁôÂÃ¡A±Ninput Åã¥Ü
+    0.é»é¸pencilé€²å…¥ç·¨è¼¯æ¨¡å¼
+    1.å°‡æ¨£æ¿å…§å®¹ éš±è—ï¼Œå°‡input é¡¯ç¤º
     */
     $(".tbody").on("click",".edit-btn",function () {
     	block_ui();
-        let obj_div_tr = getTrObjFromBtn($(this));//¨ú±o«ö¶s¤Wªºtr
-        //±N.text ¸ê®Æ¶ë¤J input
+        let obj_div_tr = getTrObjFromBtn($(this));//å–å¾—æŒ‰éˆ•ä¸Šçš„tr
+        //å°‡.text è³‡æ–™å¡å…¥ input
         edit_process(obj_div_tr);
-        //±N¾\Åª®æ¦¡ÁôÂÃ¡A±N­ìtextÄæ¦ìÁôÂÃ
+        //å°‡é–±è®€æ ¼å¼éš±è—ï¼Œå°‡åŸtextæ¬„ä½éš±è—
         mode_change_event(obj_div_tr,"edit");
     });
     /*
-    0.ÂI¿ïx-btn ±N½s¿è¼Ò¦¡¨ú®ø¡A¦^¨ìÅã¥Ü¼Ò¦¡
-    1.±N¼ËªO¤º®e Åã¥Ü¡A±Ninput ÁôÂÃ
-    2.±N.text ¸ê®Æ¶ë¦^ input,textarea,select
+    0.é»é¸x-btn å°‡ç·¨è¼¯æ¨¡å¼å–æ¶ˆï¼Œå›åˆ°é¡¯ç¤ºæ¨¡å¼
+    1.å°‡æ¨£æ¿å…§å®¹ é¡¯ç¤ºï¼Œå°‡input éš±è—
+    2.å°‡.text è³‡æ–™å¡å› input,textarea,select
     */
     $(".tbody").on("click",".cancel-btn",function () {
     	block_ui();
-    	let obj_div_tr = getTrObjFromBtn($(this));//¨ú±o«ö¶s¤Wªºtr
-    	let timestamp = obj_div_tr.find($("#timestamp > .text")).text();//¨ú±oname ¤ºªº­È
-        if((timestamp!=null && timestamp!="")){//§PÂ_¤w¸gÀx¦s¹L
-	        //±N¾\Åª®æ¦¡ÁôÂÃ¡A±N­ìtextÄæ¦ìÁôÂÃ
+    	let obj_div_tr = getTrObjFromBtn($(this));//å–å¾—æŒ‰éˆ•ä¸Šçš„tr
+    	let timestamp = obj_div_tr.find($("#timestamp > .text")).text();//å–å¾—name å…§çš„å€¼
+        if((timestamp!=null && timestamp!="")){//åˆ¤æ–·å·²ç¶“å„²å­˜é
+	        //å°‡é–±è®€æ ¼å¼éš±è—ï¼Œå°‡åŸtextæ¬„ä½éš±è—
 	        mode_change_event(obj_div_tr,"read");
-        }else{//²Ä¤@¦¸²£¥ÍªºDOM
-        	console.log("²Ä¤@¦¸²£¥Í³Q¨ú®ø");
+        }else{//ç¬¬ä¸€æ¬¡ç”¢ç”Ÿçš„DOM
+        	console.log("ç¬¬ä¸€æ¬¡ç”¢ç”Ÿè¢«å–æ¶ˆ");
             del_process(obj_div_tr);
         }
     });
     /*
-    0.ÂI¿ïgarbage-btn ±N½s¿è¼Ò¦¡¨ú®ø¡A¦^¨ìÅã¥Ü¼Ò¦¡
-    1.±Ntr¤¸¯À²¾°£¡B²MªÅ
+    0.é»é¸garbage-btn å°‡ç·¨è¼¯æ¨¡å¼å–æ¶ˆï¼Œå›åˆ°é¡¯ç¤ºæ¨¡å¼
+    1.å°‡trå…ƒç´ ç§»é™¤ã€æ¸…ç©º
     */
     $(".tbody").on("click",".del-btn",function () {
     	block_ui();
-    	let obj_div_tr = getTrObjFromBtn($(this));//¨ú±o«ö¶s¤Wªºtr
+    	let obj_div_tr = getTrObjFromBtn($(this));//å–å¾—æŒ‰éˆ•ä¸Šçš„tr
     	let name = obj_div_tr.find("#name .text").text();
     	let check = confirm("Are you sure you want to delete "+name+"from AddressBook?");
         if(check){
-            map_multi_data = {};//±N¸ê®Æ¨ê·s­«·s¦s
+            map_multi_data = {};//å°‡è³‡æ–™åˆ·æ–°é‡æ–°å­˜
             del_process(obj_div_tr);
         }
     });
     /*
-    0.ÂI¿ïcheck(select all) selector : checkbox
+    0.é»é¸check(select all) selector : checkbox
     */
     $(".checkbox_all").click(function(){
     	let obj_checkbox_all = $(this);
@@ -240,7 +241,7 @@
         });
     });
     /*
-    0.ÂI¿ïcheck(single checkbox) selector : checkbox
+    0.é»é¸check(single checkbox) selector : checkbox
     */
     $("#del-check-btn").click(function(){
     	block_ui();
@@ -255,7 +256,7 @@
                 obj_div_tr.remove();
             }
         });
-        map_multi_data = {};//±N¸ê®Æ¨ê·s­«·s¦s
+        map_multi_data = {};//å°‡è³‡æ–™åˆ·æ–°é‡æ–°å­˜
         reload_del_process();
     });
 
