@@ -1,7 +1,7 @@
 	function add_process(){
         loc_ser_number++;
-        let obj_div_tr_temp =  $("#temp > #div-tr-temp");//取得dom 物件
-        let html_div_temp = get_outer_html(obj_div_tr_temp);//取得HTML
+        let obj_div_tr_temp =  $("#temp > #div-tr-temp");// get dom object
+        let html_div_temp = get_outer_html(obj_div_tr_temp);// get html dom
         $(".tbody ").append(html_div_temp);//將樣板塞入
         let tr_size = $(".tbody > .tr").length;//取得 tbody > .tr element 的數量
         $(".tbody .tr #no input").last().attr("disabled",true).val(tr_size);//
@@ -45,4 +45,5 @@
         });
         load_data(ajax_get());
     }
+
 
