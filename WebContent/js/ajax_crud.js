@@ -1,16 +1,16 @@
 	function isNull(str){
         if(str == null || str == undefined || str == "") return true;
     }
-	function ajax_post(data_before_transfer_by_ajax){//insert to restdb
+	function ajax_post(data_arrange){//insert to restdb
     	//console.log("name :"+map["name"]+" tel :"+map["tel"]+" type_index :"+map["type_index"]+"timestamp: "+map["timestamp"]);
-    	let data_need__transfer = data_before_transfer_by_ajax;
-        if(!isNull(data_need__transfer["data"]["name"])){
+    	let data = data_arrange;
+        if(!isNull(data_arrange["data"]["name"])){
         	$.ajax({
     		    type: "POST",
     		    url: "AdrbookServlet",
     		    async: false,
     		    contentType: "application/json", // NOT dataType!
-    		    data: JSON.stringify(data_need__transfer),
+    		    data: JSON.stringify(data),
     		    success: function(response) {
     	            console.log(response);
     		    }
@@ -78,7 +78,7 @@
 			});
     }
 
-    function data_before_transfer_by_ajax(one_adrbook_data,crud_str){
+    function data_arrange(one_adrbook_data,crud_str){
     	let data ='';
     	if(crud_str=="insert"){
     		data = {action:crud_str,

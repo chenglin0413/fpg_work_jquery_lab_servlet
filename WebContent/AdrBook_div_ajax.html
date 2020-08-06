@@ -16,11 +16,14 @@
 	<script src="http://malsup.github.io/jquery.blockUI.js"></script>
 
     <!--Introduce the internal js file-->
+    <script type="text/javascript" src="js/tools.js" ></script>
+    <script type="text/javascript" src="js/param.js" ></script>
+    <script type="text/javascript" src="js/attribute_getter.js" ></script>
+    <script type="text/javascript" src="js/attribute_setter.js" ></script>
     <script type="text/javascript" src="js/drag_drop.js" ></script>
     <script type="text/javascript" src="js/process.js" ></script>
     <script type="text/javascript" src="js/ajax_crud.js" ></script>
-    <script type="text/javascript" src="js/attribute_setter.js" ></script>
-    <script type="text/javascript" src="js/attribute_getter.js" ></script>
+
 
 
 
@@ -94,171 +97,27 @@
 //    return this.replace(new RegExp(s1,"gm"), s2);
 //}
 
-    var map_multi_data={};
-    var loc_ser_number = 0;// store gender 's radio name serial_number
-    var object_show_hide_key =
-     {
-      "1":["input:not(:checkbox)",".inner_text","select","textarea",".save-btn",".cancel-btn",".checkbox > #_id"]
-     ,"2":[".edit-btn",".del-btn",".text","input[type=checkbox]"]
-     };
+
 
     $(document).ready(function(){
-    	map_multi_data = ajax_get();
+    	init();//load button script ;
+    	all_row_data = ajax_get();
         loc_ser_number = localStorage.getItem("loc_ser_number");
-        if(map_multi_data==null)map_multi_data={};// if loc_map is null , then give a  new {}
-        let size_map_multi_data = Object.keys(map_multi_data).length;
-        console.log("init:"+loc_ser_number);
-        console.log(map_multi_data);
-        if(!size_map_multi_data==0){
-            load_data_from_loc_storage(map_multi_data,size_map_multi_data);
+        if(all_row_data==null)all_row_data={};// if loc_map is null , then give a  new {}
+        let all_row_data_length = Object.keys(all_row_data).length;
+        if(!all_row_data_length==0){
+            load_data_from_loc_storage(all_row_data,all_row_data_length);
         }
-        mode_change_event($(".tbody"),"read");
+        mode_change_event($(".tbody"),"read"); //when first time loading page, close edit mode
         select_all_tr_add_draggble_evnetlistener();
     });
 
-     //$("#test").click(function () {
-     //    alert(ajax_get());
-     //});
 
-    function mode_change_event(obj,mode){
-        $.each(object_show_hide_key,function(key,object){
-            $.each(object,function(index,value){
-                if((mode=="read" &&key=="1")||(mode=="edit" &&key=="2")){// "1": element like input , select, textarea, save-btn,cancel-btn
-                    console.log("key: " +key);
-                    obj.find(value).hide();
-                }else{// "2": element like .text , del-btn,edit-btn
-                    obj.find(value).show();
-                }
-            });
-        });
-    }
-    function block_ui(){
-    	$.blockUI(
-    	    	{ css:
-    	    		{
-    	    	        border: 'none',
-    		            padding: '15px',
-    		            backgroundColor: '#000',
-    		            '-webkit-border-radius': '10px',
-    		            '-moz-border-radius': '10px',
-    		            opacity: .5,
-    		            color: '#fff'
-    	        	}
-    	    	}
-    	);
-    	setTimeout($.unblockUI, 1000);
-    }
-    /*新增動作
-    1.新增一個樣板
-    2.將新增按鈕隱藏
-    */
-    $("#add-btn").click(function () {
-        add_process();
-    });
-    /*
-    0.儲存動作
-    1.將樣板內容input 存起來
-    2.將input的元素隱藏，將填入的值放入.text 的元素
-    3.將填入的值 經由 集合{鍵值組}儲存
-    */
-    $(".tbody").on("click",".save-btn",function () {
-    	//block_ui();
-        let obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
-        let add_flag = false;
-        if (obj_div_tr.find("#timestamp > .text").text().length==0)add_flag=true;
-        let map_sing_data = save_process(obj_div_tr);
-        // var no = obj_div_tr.find($("#no > input")).val();//取得no 內的值
-        // map_multi_data[no.toString()] = map_sing_data;//儲存資料
-        console.log("add_flag :"+add_flag);
-        if(add_flag){
-            ajax_post(data_before_transfer_by_ajax(map_sing_data,"insert"));
-        }
-        else{
-            ajax_put(map_sing_data);
-        }
-        load_data(ajax_get());
-        // 將編輯格式隱藏
-        mode_change_event(obj_div_tr,"read");
-    });
 
-    /*
-    0.點選pencil進入編輯模式
-    1.將樣板內容 隱藏，將input 顯示
-    */
-    $(".tbody").on("click",".edit-btn",function () {
-    	block_ui();
-        let obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
-        //將.text 資料塞入 input
-        edit_process(obj_div_tr);
-        //將閱讀格式隱藏，將原text欄位隱藏
-        mode_change_event(obj_div_tr,"edit");
-    });
-    /*
-    0.點選x-btn 將編輯模式取消，回到顯示模式
-    1.將樣板內容 顯示，將input 隱藏
-    2.將.text 資料塞回 input,textarea,select
-    */
-    $(".tbody").on("click",".cancel-btn",function () {
-    	block_ui();
-    	let obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
-    	let timestamp = obj_div_tr.find($("#timestamp > .text")).text();//取得name 內的值
-        if((timestamp!=null && timestamp!="")){//判斷已經儲存過
-	        //將閱讀格式隱藏，將原text欄位隱藏
-	        mode_change_event(obj_div_tr,"read");
-        }else{//第一次產生的DOM
-        	console.log("第一次產生被取消");
-            del_process(obj_div_tr);
-        }
-    });
-    /*
-    0.點選garbage-btn 將編輯模式取消，回到顯示模式
-    1.將tr元素移除、清空
-    */
-    $(".tbody").on("click",".del-btn",function () {
-    	block_ui();
-    	let obj_div_tr = getTrObjFromBtn($(this));//取得按鈕上的tr
-    	let name = obj_div_tr.find("#name .text").text();
-    	let check = confirm("Are you sure you want to delete "+name+"from AddressBook?");
-        if(check){
-            map_multi_data = {};//將資料刷新重新存
-            del_process(obj_div_tr);
-        }
-    });
-    /*
-    0.點選check(select all) selector : checkbox
-    */
-    $(".checkbox_all").click(function(){
-    	let obj_checkbox_all = $(this);
-    	let check_flag = obj_checkbox_all.prop("checked");
-    	let obj_input_checkbox = $(".tbody  input[type=checkbox]");
-        obj_input_checkbox.each(function(idx,val){
-        	let obj = $(this);//get each item
-            if(check_flag){
-                obj.prop("checked",true);
-            }else{
-                obj.prop("checked",false);
-            }
-        });
-    });
-    /*
-    0.點選check(single checkbox) selector : checkbox
-    */
-    $("#del-check-btn").click(function(){
-    	block_ui();
-    	let obj_input_checkbox = $(".tbody input[type=checkbox]");
-        obj_input_checkbox.each(function(idx,val){
-        	let obj = $(this);//get each item
-        	let obj_div_tr = getTrObjFromBtn(obj).parent();
-        	let check_flag = obj.prop("checked");
-            if(check_flag){
-            	let objID=$(obj_div_tr).find("#_id").text();
-                ajax_delete(objID);
-                obj_div_tr.remove();
-            }
-        });
-        map_multi_data = {};//將資料刷新重新存
-        reload_del_process();
-    });
+
+
+
+
 
 </script>
 
