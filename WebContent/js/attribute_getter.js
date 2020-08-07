@@ -5,7 +5,7 @@
     function get_outer_html(obj){//取得dom元素
     	return obj.prop("outerHTML");
     }
-    function get_tr_property(obj,mode){
+    function attr_manager(obj,mode){
     	let object_val ={};
     	let _id,name,tel,notes,type_obj,type,type_index,gender,timestamp="";
         if(mode==="save"){

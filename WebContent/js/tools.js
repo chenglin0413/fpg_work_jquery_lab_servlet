@@ -7,19 +7,19 @@ function init(){
     */
 	$(".tbody").on("click",".save-btn",function () {
     	block_ui();
-        let obj_div_tr = get_upstair_parent($(this));//取得按鈕上的tr
+        let tr_dom = get_upstair_parent($(this));//取得按鈕上的tr
         let new_row_flag = false;
-        if (obj_div_tr.find("#timestamp > .text").text().length==0)new_row_flag=true;
-        let map_sing_data = save_process(obj_div_tr);
+        if (tr_dom.find("#timestamp > .text").text().length==0)new_row_flag=true;
+        let row_data = save_flow(tr_dom);
         if(new_row_flag){
-            ajax_post(data_arrange(map_sing_data,"insert"));
+        	ist(data_pack(row_data,"insert"));
         }
         else{
-            ajax_put(map_sing_data);
+            upd(data_pack(row_data,"update"));
         }
-        load_data(ajax_get());
+        load_data(qry(data_pack("","getAll")));
         // 將編輯格式隱藏
-        mode_change_event(obj_div_tr,"read");
+        mode_change_event(tr_dom,"read");
         select_all_tr_add_draggble_evnetlistener();
     });
 	/*新增動作
@@ -27,7 +27,7 @@ function init(){
     2.將新增按鈕隱藏
     */
     $("#add-btn").click(function () {
-        add_process();
+    	add_flow();
     });
 
 
@@ -37,11 +37,11 @@ function init(){
     */
     $(".tbody").on("click",".edit-btn",function () {
     	block_ui();
-        let obj_div_tr = get_upstair_parent($(this));//取得按鈕上的tr
+        let tr_dom = get_upstair_parent($(this));//取得按鈕上的tr
         //將.text 資料塞入 input
-        edit_process(obj_div_tr);
+        edit_flow(tr_dom);
         //將閱讀格式隱藏，將原text欄位隱藏
-        mode_change_event(obj_div_tr,"edit");
+        mode_change_event(tr_dom,"edit");
         select_all_tr_add_draggble_evnetlistener();
     });
     /*
@@ -51,14 +51,13 @@ function init(){
     */
     $(".tbody").on("click",".cancel-btn",function () {
     	block_ui();
-    	let obj_div_tr = get_upstair_parent($(this));//取得按鈕上的tr
-    	let timestamp = obj_div_tr.find($("#timestamp > .text")).text();//取得name 內的值
+    	let tr_dom = get_upstair_parent($(this));//取得按鈕上的tr
+    	let timestamp = tr_dom.find($("#timestamp > .text")).text();//取得name 內的值
         if((timestamp!=null && timestamp!="")){//判斷已經儲存過
 	        //將閱讀格式隱藏，將原text欄位隱藏
-	        mode_change_event(obj_div_tr,"read");
+	        mode_change_event(tr_dom,"read");
         }else{//第一次產生的DOM
-        	console.log("第一次產生被取消");
-            del_process(obj_div_tr);
+        	del_flow(tr_dom);
         }
     });
     /*
@@ -67,12 +66,12 @@ function init(){
     */
     $(".tbody").on("click",".del-btn",function () {
     	block_ui();
-    	let obj_div_tr = get_upstair_parent($(this));//取得按鈕上的tr
-    	let name = obj_div_tr.find("#name .text").text();
+    	let tr_dom = get_upstair_parent($(this));//取得按鈕上的tr
+    	let name = tr_dom.find("#name .text").text();
     	let check = confirm("Are you sure you want to delete "+name+"from AddressBook?");
         if(check){
         	all_row_data = {};//將資料刷新重新存
-            del_process(obj_div_tr);
+        	del_flow(tr_dom);
         }
         select_all_tr_add_draggble_evnetlistener();
     });
@@ -100,18 +99,18 @@ function init(){
     	let obj_input_checkbox = $(".tbody input[type=checkbox]");
         obj_input_checkbox.each(function(idx,val){
         	let obj = $(this);//get each item
-        	let obj_div_tr = get_upstair_parent(obj).parent();
+        	let tr_dom = get_upstair_parent(obj).parent();
         	let bol_checked = obj.prop("checked");
             if(bol_checked){
-            	let objID=$(obj_div_tr).find("#_id").text();
-                ajax_delete(objID);
-                obj_div_tr.remove();
+            	let obj_id=$(tr_dom).find("#_id").text();
+                del(data_pack(obj_id,"delete"));
+                tr_dom.remove();
             }
         });
         all_row_data = {};//將資料刷新重新存
-        reload_del_process();
+        f5_after_del();
     });
-    select_all_tr_add_draggble_evnetlistener();
+    render();//ready page rendering
 }
 function block_ui(){//block ui
 	$.blockUI(
@@ -141,4 +140,15 @@ function mode_change_event(obj,mode){
             }
         });
     });
+}
+function render(){
+	all_row_data = qry(data_pack("","getAll"));
+	sort_num = localStorage.getItem("sort_num");
+    if(all_row_data==null)all_row_data={}; // if loc_map is null , then give a  new {}
+    let row_size = Object.keys(all_row_data).length;
+    if(!row_size==0){
+    	load_from_qry(all_row_data,row_size);
+    }
+    mode_change_event($(".tbody"),"read"); //when first time loading page, close edit mode
+    select_all_tr_add_draggble_evnetlistener();
 }

@@ -21,7 +21,7 @@
     <script type="text/javascript" src="js/attribute_getter.js" ></script>
     <script type="text/javascript" src="js/attribute_setter.js" ></script>
     <script type="text/javascript" src="js/drag_drop.js" ></script>
-    <script type="text/javascript" src="js/process.js" ></script>
+    <script type="text/javascript" src="js/flow.js" ></script>
     <script type="text/javascript" src="js/ajax_crud.js" ></script>
 
 
@@ -97,28 +97,9 @@
 //    return this.replace(new RegExp(s1,"gm"), s2);
 //}
 
-
-
     $(document).ready(function(){
-    	init();//load button script ;
-    	all_row_data = ajax_get();
-        loc_ser_number = localStorage.getItem("loc_ser_number");
-        if(all_row_data==null)all_row_data={};// if loc_map is null , then give a  new {}
-        let all_row_data_length = Object.keys(all_row_data).length;
-        if(!all_row_data_length==0){
-            load_data_from_loc_storage(all_row_data,all_row_data_length);
-        }
-        mode_change_event($(".tbody"),"read"); //when first time loading page, close edit mode
-        select_all_tr_add_draggble_evnetlistener();
+    	init();
     });
 
-
-
-
-
-
-
-
 </script>
-
 </html>
