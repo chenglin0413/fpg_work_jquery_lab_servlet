@@ -130,16 +130,14 @@ function block_ui(){//block ui
 }
 
 function mode_change_event(obj,mode){
-    $.each(object_show_hide_key,function(key,object){
-        $.each(object,function(index,value){
-            if((mode=="read" &&key=="1")||(mode=="edit" &&key=="2")){// "1": element like input , select, textarea, save-btn,cancel-btn
-                console.log("key: " +key);
-                obj.find(value).hide();
-            }else{// "2": element like .text , del-btn,edit-btn
-                obj.find(value).show();
-            }
-        });
-    });
+	if(mode=="read"){
+		obj.find(".ed").hide();
+		obj.find(".rd").show();
+	}else{
+		obj.find(".ed").show();
+		obj.find(".rd").hide();
+	}
+
 }
 function render(){
 	all_row_data = qry(data_pack("","getAll"));

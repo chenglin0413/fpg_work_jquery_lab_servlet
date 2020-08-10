@@ -26,8 +26,8 @@
 
     function save_flow(obj){
     	let row_data = {};
-    	let object_val = attr_manager(obj,"save");
-    	return dom_2_row_data(object_val,row_data);
+    	let dict = attr_manager(obj,"save");
+    	return dom_2_row_data(dict,row_data);
     }
     function del_flow(obj_old){
     	let obj_id=$(obj_old).find("#_id").text();

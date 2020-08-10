@@ -6,7 +6,7 @@
     	return obj.prop("outerHTML");
     }
     function attr_manager(obj,mode){
-    	let object_val ={};
+    	let dict ={};
     	let _id,name,tel,notes,type_obj,type,type_index,gender,timestamp="";
         if(mode==="save"){
             _id = obj.find("#_id > .text").text();
@@ -28,8 +28,8 @@
             timestamp = new Date(obj["timestamp"]).toLocaleString();
         }
         console.log("notict"+name+tel+notes+type_index+_id);
-        object_val = {"_id":_id,"name":name,"tel":tel,"notes":notes,"type":type,"type_index":type_index.toString(),"gender":gender,"timestamp":timestamp};
-        return object_val;
+        dict = {"_id":_id,"name":name,"tel":tel,"notes":notes,"type":type,"type_index":type_index.toString(),"gender":gender,"timestamp":timestamp};
+        return dict;
     }
     function getID(str){
     	let id = $(str).prop("id");

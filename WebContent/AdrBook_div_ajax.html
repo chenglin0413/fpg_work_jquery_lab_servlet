@@ -61,33 +61,33 @@
 
         <div id="checkbox" class="td">
             <div class="checkbox">
-                <div id="_id" ><div class="text"></div></div>
-                <input type="checkbox"/>
+                <div id="_id" ><div class="text" style="display: none;" ></div></div>
+                <input class="rd" type="checkbox"/>
             </div>
         </div>
-        <div id="no" class="td"><div class="text" style="display: none;"></div><input type="text"></div>
-        <div id="name" class="td"><div class="text"></div><input type="text"></div>
-        <div id="tel" class="td"><div class="text"></div><input type="text"></div>
-        <div id="gender" class="td"><div class="text"></div>
-            <input type="radio" name="gender" value="male" checked="checked"><div class="inner_text">男性</div>
-            <input type="radio" name="gender" value="female"><div class="inner_text">女性</div>
+        <div id="no" class="td"><div class="text rd" style="display: none;"></div><input class="ed" type="text"></div>
+        <div id="name" class="td"><div class="text rd"></div><input class="ed" type="text"></div>
+        <div id="tel" class="td"><div class="text rd"></div><input class="ed" type="text"></div>
+        <div id="gender" class="td"><div class="text rd"></div>
+            <input class="ed" type="radio" name="gender" value="male" checked="checked"><div class="inner_text ed">男性</div>
+            <input class="ed" type="radio" name="gender" value="female"><div class="inner_text ed">女性</div>
         </div>
-        <div id="type" class="td"><div class="text"></div>
-            <div class="selectIndex" style="display: none;"></div>
-            <select>
+        <div id="type" class="td"><div class="text rd"></div>
+            <div class="selectIndex " style="display: none;"></div>
+            <select class="ed">
                 <option>同學</option>
                 <option>家庭</option>
                 <option>工作夥伴</option>
             </select>
         </div>
-        <div id="notes" class="td"><div class="text"></div><textarea></textarea></div>
+        <div id="notes" class="td"><div class="text rd"></div><textarea class="ed"></textarea></div>
         <div id="function" class="td">
-            <button id="save-btn" class="save-btn"><i class="fas fa-save"></i></button>
-            <button id="cancel-btn" class="cancel-btn"><i class="fas fa-window-close"></i></button>
-            <button id="edit-btn" class="edit-btn" style="display: none;"><i class="fas fa-pen-square"></i></button>
-            <button id="del-btn" class="del-btn" style="display: none;"><i class="far fa-trash-alt"></i></button>
+            <button id="save-btn" class="save-btn ed"><i class="fas fa-save"></i></button>
+            <button id="cancel-btn" class="cancel-btn ed"><i class="fas fa-window-close"></i></button>
+            <button id="edit-btn" class="edit-btn rd" style="display: none;"><i class="fas fa-pen-square"></i></button>
+            <button id="del-btn" class="del-btn rd" style="display: none;"><i class="far fa-trash-alt"></i></button>
         </div>
-        <div id="timestamp" class="td"><div class="text" style="display: none;"></div></div>
+        <div id="timestamp" class="td"><div class="text rd" style="display: none;"></div></div>
 </div>
 </span>
 <!--  <button id="test" class="test"><i class="far fa-trash-alt"></i></button> -->
